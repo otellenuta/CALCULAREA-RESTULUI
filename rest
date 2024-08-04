@@ -1,0 +1,187 @@
+int[] bancnoteLei = new int[] { 1, 2, 5, 10, 20, 50, 100, 500, 1000 };
+int pretul = 0;
+int bani = 0;
+int solicitaBani = 0;
+
+pretul = SumaSpreAchitare(pretul);
+bani = BaniIncasati(bani);
+
+List<string> nisibrozi = new List<string>
+{
+    "Ahueti, eeee!!! patanu, mai pune bani!!!",
+    "La noi nisibrozii nu sunt bineveniti!!!",
+    "Tak! ia mai da bani sau mars din magazin!!!",
+    "Suma oferita e mai mica decat necesar!",
+    "Patanu, aici nu tii crucea rosie, pentru ajutor umanitar nu la noi!",
+    "Auzi, te asteapta gumanitarka!"
+};
+
+if (bani > pretul)   
+{
+    Rest(bancnoteLei, pretul, bani);
+	return;
+}
+else if (bani < pretul)
+{  
+    do
+    {
+        string raspuns = RaspunsPentruNisibrozi(nisibrozi);
+        Console.WriteLine();
+        Console.WriteLine(raspuns);
+        Console.WriteLine();
+        Console.WriteLine("Doriti sa mai depuneti bani?");
+        solicitaBani = int.Parse(Console.ReadLine());
+        Console.WriteLine();
+        if (solicitaBani > 0)
+        {             
+            bani += BaniIncasati(out bani);    
+            Console.Write("Suma totala de bani oferita este: " + bani);
+            Console.WriteLine();
+
+        }
+        else
+        {
+            Console.WriteLine("Atunci o figa tie, nu produse! Mars din magazin, SARANTOCULE!");
+            return;
+        }
+        if (bani >= pretul) 
+        {
+            break;
+        }
+    } while (true);
+    Rest(bancnoteLei, pretul, bani);
+    return;
+}
+else if (bani == pretul)
+{
+    Console.WriteLine("Fara rest.");
+}
+
+static string RaspunsPentruNisibrozi(List<string> nisibrozi)
+{
+    Random raspuns = new Random();
+    int indexRaspuns = raspuns.Next(nisibrozi.Count);
+    string rezultat = nisibrozi[indexRaspuns];
+    return rezultat;
+}
+static int SumaSpreAchitare(int pretul) 
+{
+    Console.WriteLine("Pretul total este:");
+    pretul = int.Parse(Console.ReadLine());
+    Console.WriteLine();
+    return pretul;
+}
+
+static int BaniIncasati(int bani)
+{    
+    Console.WriteLine("Ce suma de bani oferiti?");
+    bani = int.Parse(Console.ReadLine());
+    return bani;
+}
+
+static int Rest(int[] bancnoteLei, int pretul, int sumaTotala)
+{
+    int rest = 0;
+    {
+        rest = sumaTotala - pretul;
+        Console.WriteLine();
+        Console.WriteLine("Restul dumneavoastra este: " + rest);
+        Console.WriteLine();
+        CombinatiiDeBancnote(bancnoteLei, rest);
+    }
+    return rest;
+}
+
+static void CombinatiiDeBancnote(int[] bancnoteLei, int rest)
+{
+    int sumaCurenta = 0;
+    List<int> bancnotePentruRest = new List<int>();
+
+	for (int i = bancnoteLei.Length - 1; i >= 0; i-- )
+	{
+    	sumaCurenta = bancnoteLei[i];
+    	while (sumaCurenta <= rest) 
+    	{
+        	rest = rest - sumaCurenta;
+        	bancnotePentruRest.Add(bancnoteLei[i]);
+    	}
+	}    
+	if (rest == 0)
+	{
+    	AfisezBancnotele(bancnotePentruRest);
+	}
+}
+
+static void AfisezBancnotele(List<int> bancnotePentruRest)
+{
+
+  bool bancnoteSimilare = true;
+  do
+  {
+      for (int i = 0; i < bancnotePentruRest.Count-1; i++)
+      {
+          bancnoteSimilare = true;
+          if (bancnotePentruRest[i] != bancnotePentruRest[i + 1])
+          {
+              bancnoteSimilare = false;
+              break;
+          }
+          break;
+      }
+          if (bancnoteSimilare == false)
+          {
+              BancnoteDiferite(bancnotePentruRest);
+          }
+
+          if (bancnoteSimilare == true)
+          {
+              BancnoteSimilare(bancnotePentruRest);
+          }
+      
+  } while (bancnotePentruRest.Count > 0);
+}
+
+static void BancnoteDiferite(List<int> bancnotePentruRest)
+{
+    
+    for (int i = 0; i < bancnotePentruRest.Count; i++)
+    {
+        do
+        {
+            Console.WriteLine("S-a utilizat o bancnota cu iterar de " + bancnotePentruRest[i] + " Lei pentru a da rest.");
+            bancnotePentruRest.RemoveAt(i);
+            if (bancnotePentruRest.Count == 1)
+            {
+                Console.WriteLine("S-a utilizat o bancnota cu iterar de " + bancnotePentruRest[i] + " Lei pentru a da rest.");
+                bancnotePentruRest.RemoveAt(i);
+                break;
+            }
+        } while (bancnotePentruRest[i] != bancnotePentruRest[i + 1]);
+        break;
+    }
+}
+
+static void BancnoteSimilare(List<int> bancnotePentruRest)
+{
+    int valoareaBancnotei = 0;
+	int indexBancnota = 0;
+	int numarDeBancnoteSimilare = 0;
+	for (int i = 0; i < bancnotePentruRest.Count; i++)
+	{
+    	valoareaBancnotei = bancnotePentruRest[i];
+    	indexBancnota = i;
+    	numarDeBancnoteSimilare = 0;
+
+    	while (bancnotePentruRest[indexBancnota] == valoareaBancnotei)
+    	{
+        	numarDeBancnoteSimilare++;
+        	bancnotePentruRest.RemoveAt(i);
+        	if (bancnotePentruRest.Count == 0)
+        	{
+            	break;
+        	}
+    	}
+    	Console.WriteLine("S-au utilizat " + numarDeBancnoteSimilare + " bancnote cu iterar de " + valoareaBancnotei + " Lei pentru a da rest.");
+    	break;
+	}
+}
